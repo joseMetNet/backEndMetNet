@@ -1,47 +1,30 @@
 import { Sequelize } from "sequelize";
-import mongoose from "mongoose";
 import "colors";
 import config from "../config/config";
+import * as sql from 'mssql';
 
-// Instancia de conexion para sql
-const dbInstanceSql = () => {
-  const db = new Sequelize(
-    config.sql_connection, // URL de conexión a la base de datos
-    {
-      dialect: "mssql", // cambiar segun sea la necesidad --> defoult: SQL SERVER
-      logging: false,
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false, // Solo necesario si estás usando una base de datos gratuita en Heroku
-        },
-      },
-    }
-  );
-  return db;
+const configSQL: sql.config = {
+  user: config.user_server_sql,
+  password: "13A132b17#",
+  database: config.name_database_sql,
+  server:config.server_name_sql,
+  options: {
+    encrypt: true,
+  },
 };
 
-// Conexion para mongo
-const dbConnection = async () => {
+// Instancia de conexión para SQL
+async function connectToSqlServer() {
   try {
-    mongoose.set("strictQuery", false);
-    await mongoose.connect(config.mongo_connection);
-    console.log(" 🌳 conectado correctamente a Base de datos online".blue);
+    const pool = await sql.connect(configSQL); // Utiliza la configuración de SQL
+    console.log('Conectado a SQL Server');
+
+    return pool;
   } catch (err) {
-    console.log(" 😡 could not connect to database -- MONGO ".red);
+    console.error('Error al conectar a SQL Server:', err);
   }
-};
+}
 
-// Conexion para sql
-const dbConncetionSql = async () => {
-  try {
-    // Instancia de conexion para sql
-    const db = dbInstanceSql();
-    await db.authenticate();
-    console.log(" 🍀 database conected".green);
-  } catch (error) {
-    console.log(" 😡 could not connect to database -- SQL ".red);
-  }
-};
 
-export { dbConnection, dbConncetionSql, dbInstanceSql };
+
+export { connectToSqlServer };
