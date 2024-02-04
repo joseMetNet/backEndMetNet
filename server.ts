@@ -1,14 +1,14 @@
-import config from "../config/config";
-import { dbConncetionSql, dbConnection } from "../DB/config";
+import config from "./src/config/config";
+import { dbConncetionSql, dbConnection } from "./src/DB/config";
 import express, { Application } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import "colors";
-import i18n from "../config/i18n";
+import i18n from "./src/config/i18n";
 import fileUpload from 'express-fileupload';
 
 //routes
-import exampleRoutes from "../routes/example";
+import exampleRoutes from "./src/routes/example";
 
 class Server {
   private app: Application;
